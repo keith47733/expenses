@@ -7,7 +7,8 @@ class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
   final Function deleteTx;
 
-  TransactionList(this.transactions, this.deleteTx);
+  const TransactionList(this.transactions, this.deleteTx, {Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,7 @@ class TransactionList extends StatelessWidget {
                   child: ListTile(
                     leading: CircleAvatar(
                       radius: 30,
-                      backgroundColor: Colors.lightGreen,
+                      backgroundColor: Colors.green,
                       foregroundColor: Colors.white,
                       child: Padding(
                         padding: const EdgeInsets.all(6.0),
@@ -63,7 +64,7 @@ class TransactionList extends StatelessWidget {
                       onPressed: () => deleteTx(transactions[index].id),
                       icon: const Icon(
                         Icons.delete,
-                        color: Colors.red,
+                        //color: Colors.red,
                       ),
                     ),
                   ),
