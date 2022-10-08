@@ -26,6 +26,42 @@ List<Transaction> mockTx() {
       amount: 120.00,
       date: DateTime.now().subtract(const Duration(days: 3)),
     ),
+		Transaction(
+      id: 't3',
+      title: 'Gas',
+      amount: 65.00,
+      date: DateTime.now().subtract(const Duration(days: 2)),
+    ),
+    Transaction(
+      id: 't4',
+      title: 'Rent',
+      amount: 120.00,
+      date: DateTime.now().subtract(const Duration(days: 3)),
+    ),
+    Transaction(
+      id: 't5',
+      title: 'UFC PPV',
+      amount: 60.00,
+      date: DateTime.now().subtract(const Duration(days: 4)),
+    ),
+		Transaction(
+      id: 't3',
+      title: 'Gas',
+      amount: 65.00,
+      date: DateTime.now().subtract(const Duration(days: 2)),
+    ),
+    Transaction(
+      id: 't4',
+      title: 'Rent',
+      amount: 120.00,
+      date: DateTime.now().subtract(const Duration(days: 3)),
+    ),
+    Transaction(
+      id: 't5',
+      title: 'UFC PPV',
+      amount: 60.00,
+      date: DateTime.now().subtract(const Duration(days: 4)),
+    ),
     Transaction(
       id: 't5',
       title: 'UFC PPV',
