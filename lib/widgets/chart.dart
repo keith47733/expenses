@@ -35,52 +35,41 @@ class Chart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 0,
-        bottom: 10,
-        left: 0,
-        right: 0,
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(24),
-            bottomRight: Radius.circular(24),
-          ),
+    return Container(
+			margin: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18.0),
 					gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-               Colors.yellow[50],
-                Colors.yellow[100],
-              ],
-            ),
-
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey[700].withOpacity(0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              //offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: groupedTxValues.map((data) {
-              return Flexible(
-                fit: FlexFit.tight,
-                child: ChartBar(
-                  data['day'],
-                  data['amount'],
-                  totalSpending == 0.0 ? 0.0 : (data['amount'] as double) / totalSpending,
-                ),
-              );
-            }).toList(),
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+             Colors.yellow[50],
+              Colors.yellow[100],
+            ],
           ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey[700].withOpacity(0.5),
+            spreadRadius: 5,
+            blurRadius: 7,
+            //offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: groupedTxValues.map((data) {
+            return Flexible(
+              fit: FlexFit.tight,
+              child: ChartBar(
+                data['day'],
+                data['amount'],
+                totalSpending == 0.0 ? 0.0 : (data['amount'] as double) / totalSpending,
+              ),
+            );
+          }).toList(),
         ),
       ),
     );

@@ -11,71 +11,80 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: transactions.isEmpty
-          ? Column(
-              children: [
-                Text(
-                  'No Transactions added yet!',
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                SizedBox(
-                  height: 250,
-                  child: Image.asset(
-                    'assets/images/waiting.png',
-                    fit: BoxFit.cover,
+    return transactions.isEmpty
+        ? LayoutBuilder(
+            builder: (context, constraints) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'No Transactions added yet!',
+                  style: Theme.of(context).textTheme.bodyMedium,
                   ),
-                ),
-              ],
-            )
-          : Padding(
-              padding: const EdgeInsets.only(
-                top: 0,
-                bottom: 10,
-                left: 0,
-                right: 0,
-              ),
-              child: ListView.builder(
-                itemCount: transactions.length,
-                itemBuilder: (context, index) {
-                  return Card(
-										color: Colors.white,
-                    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    elevation: 8,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Colors.green[300],
-                        foregroundColor: Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: FittedBox(
-                            child: Text('\$${transactions[index].amount.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                          ),
-                        ),
-                      ),
-                      title: Text(
-                        transactions[index].title,
-                        style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.normal),
-                      ),
-                      subtitle: Text(
-                        DateFormat.yMMMd().format(transactions[index].date),
-                      ),
-                      trailing: IconButton(
-                        onPressed: () => deleteTx(transactions[index].id),
-                        icon: const Icon(
-                          Icons.delete,
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    height: constraints.maxHeight * 0.60,
+                    child: Image.asset(
+                      'assets/images/waiting.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              );
+            },
+          )
+        : ListView.builder(
+            itemCount: transactions.length,
+            itemBuilder: (context, index) {
+              return Card(
+                // color: Colors.white,
+                margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                elevation: 8,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.green[300],
+                      //foregroundColor: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: FittedBox(
+                          child: Text('\$${transactions[index].amount.toStringAsFixed(2)}',
+                              style: Theme.of(context).textTheme.bodySmall.copyWith(color: Colors.white)),
                         ),
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
-    );
+                    title: Text(
+                      transactions[index].title,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    subtitle: Text(
+                      DateFormat.yMMMd().format(transactions[index].date),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    trailing: MediaQuery.of(context).size.width > 450
+                        ? TextButton.icon(
+                            onPressed: () => deleteTx(transactions[index].id),
+                            icon: Icon(
+                              Icons.delete,
+                              color: Theme.of(context).errorColor,
+                            ),
+                            label: Text(
+                              'Delete Tx',
+                              style: Theme.of(context).textTheme.bodySmall.copyWith(
+                                    color: Theme.of(context).errorColor,
+                                  ),
+                            ),
+                          )
+                        : IconButton(
+                            onPressed: () => deleteTx(transactions[index].id),
+                            icon: Icon(
+                              Icons.delete,
+                              color: Theme.of(context).errorColor,
+                            ),
+                          )),
+              );
+            },
+          );
   }
 }
