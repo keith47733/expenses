@@ -13,21 +13,38 @@ class NewTransaction extends StatefulWidget {
 class NewTransactionState extends State<NewTransaction> {
   final _txTitleController = TextEditingController();
   final _txAmountController = TextEditingController();
+  final _txDateController = TextEditingController();
 
   DateTime _selectedDate;
 
   void _submitTxData() {
-    final enteredTitle = _txTitleController.text;
+    String enteredTitle;
+    double enteredAmount;
+    DateTime enteredDate;
+
+    if (_txTitleController.text.isEmpty) {
+      return;
+    } else {
+      enteredTitle = _txTitleController.text;
+    }
+
     if (_txAmountController.text.isEmpty) {
       return;
+    } else {
+      enteredAmount = double.parse(_txAmountController.text);
     }
-    final enteredAmount = double.parse(_txAmountController.text);
 
-    if (enteredTitle.isNotEmpty && enteredAmount > 0 && _selectedDate != null) {
+    if (_txDateController.text.isEmpty) {
+      return;
+    } else {
+      enteredDate = _selectedDate;
+    }
+
+    if (enteredTitle.isNotEmpty && enteredAmount > 0 && enteredDate != null) {
       widget.addTx(
         enteredTitle,
         enteredAmount,
-        _selectedDate,
+        enteredDate,
       );
       Navigator.of(context).pop(); // CLOSES TOP-MOST SHEET
     }
@@ -43,6 +60,7 @@ class NewTransactionState extends State<NewTransaction> {
       if (pickedDate != null) {
         setState(() {
           _selectedDate = pickedDate;
+          _txDateController.text = DateFormat.yMd().format(pickedDate);
         });
       }
     });
@@ -51,61 +69,89 @@ class NewTransactionState extends State<NewTransaction> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-			child: Card(
-				elevation: 5,
-				child: Container(
-					padding: EdgeInsets.only(
-						top: 10,
-						bottom: MediaQuery.of(context).viewInsets.bottom + 10,
-						left: 10,
-						right: 10,
-					),
-					child: Column(
-						crossAxisAlignment: CrossAxisAlignment.end,
-						children: <Widget>[
-							TextField(
-								decoration: const InputDecoration(labelText: 'Title'),
-								controller: _txTitleController,
-								keyboardType: TextInputType.text,
-								onSubmitted: (_) => _submitTxData(),
-							),
-							TextField(
-								decoration: const InputDecoration(labelText: 'Amount'),
-								controller: _txAmountController,
-								keyboardType: TextInputType.number,
-								onSubmitted: (_) => _submitTxData(),
-							),
-							SizedBox(
-								height: 70,
-								child: Row(
-									children: <Widget>[
-										Expanded(
-											child: Text(
-												_selectedDate == null
-														? 'Date: No date chosen!'
-														: 'Date: ${DateFormat.yMd().format(_selectedDate)}',
-											),
-										),
-										TextButton(
-											onPressed: _displayDatePicker,
-											child: const Text(
-												'Choose Date',
-												style: TextStyle(
-													fontWeight: FontWeight.bold,
-												),
-											),
-										),
-									],
-								),
-							),
-							ElevatedButton(
-								onPressed: _submitTxData,
-								child: const Text('Add Transaction'),
-							),
-						],
-					),
-				),
-			),
-		);
-  } // Build Widget
-} // State Class
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+            top: 30,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+            left: 20,
+            right: 20,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'Expense',
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).errorColor, width: 2),
+                  ),
+                ),
+                controller: _txTitleController,
+                autofocus: false,
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.done,
+                // onSubmitted: (_) => _submitTxData(),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'Amount',
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).errorColor, width: 2),
+                  ),
+                ),
+                controller: _txAmountController,
+                autofocus: false,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                // onSubmitted: (_) => _submitTxData(),
+              ),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () {
+                  _displayDatePicker();
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                child: TextField(
+                  enabled: false,
+                  decoration: InputDecoration(
+                    hintText: 'Choose date',
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    disabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Theme.of(context).errorColor, width: 2),
+                    ),
+                  ),
+                  controller: _txDateController,
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _submitTxData,
+                child: const Text('Add Transaction'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

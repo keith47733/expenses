@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'expenses_app.dart';
 
 void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   // SystemChrome.setPreferredOrientations(
   //   [
   //     DeviceOrientation.portraitUp,

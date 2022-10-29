@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/transaction.dart';
-
-import './chart_bar.dart';
+import 'chart_bar.dart';
 
 class Chart extends StatelessWidget {
   final List<Transaction> recentTx;
@@ -36,25 +35,22 @@ class Chart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-			margin: const EdgeInsets.all(20.0),
+      margin: const EdgeInsets.only(
+        top: 8.0,
+        bottom: 8.0,
+        left: 8.0,
+        right: 8.0,
+      ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18.0),
-					gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-             Colors.yellow[50],
-              Colors.yellow[100],
-            ],
-          ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey[700].withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            //offset: Offset(0, 3),
-          ),
-        ],
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.yellow[50],
+            Colors.yellow[200],
+          ],
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12.0),

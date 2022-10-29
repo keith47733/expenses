@@ -12,9 +12,9 @@ class ExpensesApp extends StatelessWidget {
       title: 'Personal Expenses',
       theme: ThemeData(
         fontFamily: 'Quicksand',
-        // primarySwatch: Colors.blueGrey,
-        // colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.green),
-				colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
+        primarySwatch: Colors.blueGrey,
+        //colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.green),
+        //colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
         appBarTheme: const AppBarTheme(
           titleTextStyle: TextStyle(
             fontFamily: 'Quicksand',
@@ -27,11 +27,11 @@ class ExpensesApp extends StatelessWidget {
             fontFamily: 'OpenSans',
             fontSize: 14,
           ),
-					bodyMedium: TextStyle(
+          bodyMedium: TextStyle(
             fontFamily: 'Quicksand',
             fontSize: 18,
           ),
-					bodyLarge: TextStyle(
+          bodyLarge: TextStyle(
             fontFamily: 'OpenSans',
             fontSize: 22,
           ),

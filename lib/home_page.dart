@@ -17,7 +17,8 @@ class _MyHomePageState extends State<HomePage> {
   final List<Transaction> transactions = mockTx();
   // final List<Transaction> transactions = [];
 
-  bool _showChart = true;
+  bool showChart = true;
+  bool showFAB = true;
 
   List<Transaction> get _recentTx {
     return transactions.where(
@@ -34,145 +35,49 @@ class _MyHomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final deviceOrientation = mediaQuery.orientation;
+
+    final double deviceHeight = mediaQuery.size.height;
+    final double statusbarHeight = mediaQuery.padding.top;
+    const double appBarHeight = 60;
+
     bool isPortrait;
-    if (deviceOrientation == Orientation.portrait) {
+    if (mediaQuery.orientation == Orientation.portrait) {
       isPortrait = true;
+      showFAB = true;
+      showChart = false;
     } else {
       isPortrait = false;
     }
 
-    final appBar = AppBar(
-      elevation: 10,
-      // backgroundColor: Theme.of(context).primaryColor,
-      title: const Text('Personal Expenses'),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 20),
-          child: Visibility(
-            // maintainState: true,
-            // maintainAnimation: true,
-            // maintainSize: true,
-            visible: (isPortrait) ? false : true,
-            replacement: const SizedBox.shrink(),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Show Expenses',
-                  style: Theme.of(context).textTheme.bodySmall.copyWith(color: Theme.of(context).primaryColorLight),
-                ),
-                Switch(
-                  value: _showChart,
-                  onChanged: ((value) {
-                    setState(() {
-                      _showChart = value;
-                    });
-                  }),
-                ),
-                Text(
-                  'Show Chart',
-                  style: Theme.of(context).textTheme.bodySmall.copyWith(color: Theme.of(context).primaryColorLight),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-
-    final double deviceHeight = mediaQuery.size.height;
-    final double statusbarHeight = mediaQuery.padding.top;
-    final double appBarHeight = appBar.preferredSize.height;
-
     return Scaffold(
       backgroundColor: Colors.yellow[100],
-      appBar: appBar,
+      appBar: _buildAppBar(isPortrait),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (isPortrait)
-            Column(
-              children: [
-                SizedBox(
-                  height: (deviceHeight - statusbarHeight - appBarHeight) * 0.2,
-                  width: double.maxFinite,
-                  child: Image.asset(
-                    'assets/images/money.jpg',
-                    fit: BoxFit.fitWidth,
-                  ),
-                ),
-                SizedBox(
-                  height: (deviceHeight - statusbarHeight - appBarHeight) * 0.3,
-                  child: Chart(_recentTx),
-                ),
-                SizedBox(
-                  height: (deviceHeight - statusbarHeight - appBarHeight) * 0.5,
-                  child: TransactionList(transactions, _deleteTx),
-                ),
-              ],
-            ),
-          if (!isPortrait)
-            _showChart
-                ? SizedBox(
-                    height: (deviceHeight - statusbarHeight - appBarHeight) * 1,
-                    child: Chart(_recentTx),
-                  )
-                : SizedBox(
-                    height: (deviceHeight - statusbarHeight - appBarHeight) * 1,
-                    child: TransactionList(transactions, _deleteTx),
-                  ),
+            ..._buildPortraitContent(deviceHeight, statusbarHeight,
+                appBarHeight), // THREE DOTS SEPARATES LIST OF WIDGETS INTO INDIVIDUAL WIDGETS "FLATTENING THE LIST"
+          if (!isPortrait) _buildLandscapeContent(deviceHeight, statusbarHeight, appBarHeight),
         ],
       ),
-      // bottomNavigationBar: Container(
-      //   decoration: BoxDecoration(
-      //     boxShadow: [
-      //       BoxShadow(
-      //         color: Colors.grey[700].withOpacity(0.7),
-      //         spreadRadius: 7,
-      //         blurRadius: 9,
-      //         //offset: Offset(0, 3),
-      //       ),
-      //     ],
-      //   ),
-      //   child: BottomAppBar(
-      //     color: Colors.blueGrey,
-      //     shape: const CircularNotchedRectangle(),
-      //     child: Row(
-      //       mainAxisSize: MainAxisSize.max,
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //       children: [
-      //         IconButton(
-      //           icon: const Icon(Icons.menu),
-      //           color: Colors.transparent,
-      //           onPressed: () {},
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: _getFAB(isPortrait),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: _buildFAB(),
+      bottomNavigationBar: _buildBottomBar(),
     );
-  }
-
-  Widget _getFAB(isPortrait) {
-    return isPortrait
-        ? FloatingActionButton(
-            backgroundColor: Colors.transparent,
-            onPressed: () => _newTxInput(context),
-            child: Image.asset(
-              'assets/icons/money_bag.png',
-              fit: BoxFit.cover,
-            ),
-          )
-        : const SizedBox();
   }
 
   void _newTxInput(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      // isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+      ),
       builder: (_) {
         return GestureDetector(
           onTap: () {},
@@ -207,5 +112,112 @@ class _MyHomePageState extends State<HomePage> {
         );
       },
     );
+  }
+
+  PreferredSizeWidget _buildAppBar(isPortrait) {
+    return AppBar(
+      elevation: 10,
+      title: const Text('Expenses'),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 20),
+          child: Visibility(
+            visible: (isPortrait) ? false : true,
+            replacement: const SizedBox.shrink(),
+            child: _buildSwitch(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSwitch() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Show Expenses',
+          style: Theme.of(context).textTheme.bodySmall.copyWith(color: Theme.of(context).primaryColorLight),
+        ),
+        Switch(
+          value: showChart,
+          onChanged: ((value) {
+            setState(() {
+              if (value == true) {
+                showChart = true;
+                showFAB = false;
+              } else {
+                showChart = false;
+                showFAB = true;
+              }
+            });
+          }),
+        ),
+        Text(
+          'Show Chart',
+          style: Theme.of(context).textTheme.bodySmall.copyWith(color: Theme.of(context).primaryColorLight),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildPortraitContent(deviceHeight, statusbarHeight, appBarHeight) {
+    return <Widget>[
+      SizedBox(
+        height: (deviceHeight - statusbarHeight - appBarHeight - 50) * 0.3,
+        child: Chart(_recentTx),
+      ),
+      SizedBox(
+        height: (deviceHeight - statusbarHeight - appBarHeight - 50) * 0.7,
+        child: TransactionList(transactions, _deleteTx),
+      ),
+    ];
+  }
+
+  Widget _buildLandscapeContent(deviceHeight, statusbarHeight, appBarHeight) {
+    return showChart
+        ? SizedBox(
+            height: (deviceHeight - statusbarHeight - appBarHeight - 50) * 1,
+            child: Chart(_recentTx),
+          )
+        : SizedBox(
+            height: (deviceHeight - statusbarHeight - appBarHeight - 50) * 1,
+            child: TransactionList(transactions, _deleteTx),
+          );
+  }
+
+  Widget _buildFAB() {
+    return showFAB
+        ? FloatingActionButton(
+            backgroundColor: Colors.transparent,
+            onPressed: () => _newTxInput(context),
+            child: Image.asset(
+              'assets/icons/money_bag.png',
+              fit: BoxFit.cover,
+            ),
+          )
+        : const SizedBox.shrink();
+  }
+
+  Widget _buildBottomBar() {
+    return showChart
+        ? BottomAppBar(
+            color: Theme.of(context).primaryColor,
+            child: Container(
+              height: 50,
+            ),
+          )
+        : Container(
+            decoration: const BoxDecoration(boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 20)]),
+            child: BottomAppBar(
+              elevation: 10,
+              color: Theme.of(context).primaryColor,
+              shape: const CircularNotchedRectangle(),
+              notchMargin: 6,
+              child: Container(
+                height: 50,
+              ),
+            ),
+          );
   }
 }
