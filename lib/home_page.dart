@@ -13,12 +13,40 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<HomePage> {
-  final List<Transaction> transactions = mockTx();
-  // final List<Transaction> transactions = [];
+// WITH adds (not inherits) properties/methods from a mixin class (is not inheriting)
+// Can extend from only one other class, but WITH allows multiple mixins
+// to add more properties/methods
+class _MyHomePageState extends State<HomePage> with WidgetsBindingObserver {
+  // final List<Transaction> transactions = mockTx();
+  final List<Transaction> transactions = [];
 
   bool showChart = true;
   bool showFAB = true;
+
+// Create listener from WidgetsBindingObserver mixin
+// WidgetsBinding.instance.addObserver(this) will run in background and call
+// didChangeAppLifecycleState method if the app 'state' changes
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  // This method is added by the WidgetsBindingObserver mixin, but you must
+  // override to implement your own code
+  // This is called whenever app life cycle changes
+  // (inactive, paused, resumed, suspending)
+  // This listener should always be mixed with state object and disposed
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState appState) {
+    print(appState);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   List<Transaction> get _recentTx {
     return transactions.where(
@@ -32,8 +60,15 @@ class _MyHomePageState extends State<HomePage> {
     ).toList();
   }
 
+  // Every widget gets its own 'context' when created
+  // context is analogous to the element in the WIDGET - ELEMENT - RENDER tree
+  // Contains INFO on the widget and its LOCATION in the Widget Tree
+  // The contexts together create a skeleton for the widget tree!
+  // We pass data down the widget tree with arguments/constructors
+  //    Flutter uses context (eg, global variables for Theme, MediaQuery, etc)
   @override
   Widget build(BuildContext context) {
+    print('build() MyHomePageState');
     final mediaQuery = MediaQuery.of(context);
 
     final double deviceHeight = mediaQuery.size.height;

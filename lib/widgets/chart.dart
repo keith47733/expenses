@@ -7,7 +7,10 @@ import 'chart_bar.dart';
 class Chart extends StatelessWidget {
   final List<Transaction> recentTx;
 
-  const Chart(this.recentTx, {Key key}) : super(key: key);
+	
+  Chart(this.recentTx, {Key key}) : super(key: key) {
+		print('Constructor for Chart');
+	}
 
   List<Map<String, Object>> get groupedTxValues {
     return List.generate(7, (index) {
@@ -34,6 +37,7 @@ class Chart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+		print('build() Chart');
     return Container(
       margin: const EdgeInsets.only(
         top: 8.0,

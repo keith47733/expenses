@@ -1,21 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+// Instantiate a widget that 'extends' or inherits the properties/methods of a stateful widget
 class NewTransaction extends StatefulWidget {
   final Function addTx;
 
-  const NewTransaction(this.addTx, {Key key}) : super(key: key);
+  // Constructor for the widget
+  NewTransaction(this.addTx, {Key key}) : super(key: key) {
+    print('Constructor for NewTransaction widget');
+  }
 
+  // Creates a state object - createState() - linked to the widget
+  // WIDGET - ELEMENT [STATE OBJECT] - RENDER
   @override
-  NewTransactionState createState() => NewTransactionState();
+  NewTransactionState createState() {
+    print('createState for NewTransaction widget');
+    return NewTransactionState();
+  }
 }
 
+// Instantiates a widget class, or STATE CLASS, that 'extends' or inherits the properties/methods of the state object which is linked to stateful widget
 class NewTransactionState extends State<NewTransaction> {
   final _txTitleController = TextEditingController();
   final _txAmountController = TextEditingController();
   final _txDateController = TextEditingController();
 
   DateTime _selectedDate;
+
+  // Constructor for NewTransactionState class (not required - for demo)
+  NewTransactionState() {
+    print('Constructor for NewTransactionState');
+  }
+
+  // Overrides the initState method inherited from the state class
+  // to run our own code in method
+  // Executed only when widget class is first created
+  @override
+  void initState() {
+    // Execute your own code (eg, load data from http or server)
+    print('Executed @override initState() method');
+    // Super refers to parent class, in this case the state object
+    // Execute 'default' initState() from parent class (mainly for debugging)
+    super.initState();
+  }
+
+  // Override method in parent class (state object) to run our own code in method
+  // Called when widget attached to state object changes
+  @override
+  void didUpdateWidget(NewTransaction oldWidget) {
+    // Accepts oldWidget - the previous widget that was attached to the state object
+    // so you can compare to newly instantiated widget
+    // widget. refers to updated widget
+    print('Executed didUpdateWidget()');
+    super.didUpdateWidget(oldWidget);
+  }
+
+  // dispose() is executed when widget is 'destroyed' and new instance is created
+  // eg, when the state object changes or MediaQuery is called
+	// Remove streams, listeners, controllers, etc (they can lead to strange bugs)
+  @override
+  void dispose() {
+    print('Executed dispose()');
+    super.dispose();
+  }
 
   void _submitTxData() {
     String enteredTitle;
